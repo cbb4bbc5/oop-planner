@@ -1,0 +1,4 @@
+Right go_forward
+Left go_backward
+Enter calculate
+Control-a add

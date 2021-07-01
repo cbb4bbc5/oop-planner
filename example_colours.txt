@@ -1,0 +1,5 @@
+main_colour white
+nav_button_left_colour red
+nav_button_right_colour red
+label_colour purple1
+font_colour black

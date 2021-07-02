@@ -11,6 +11,7 @@ class SimpleUI:
         self.master.title('Planer')
         self.inter = Interactions(self.kb, self)
         self.master = self.inter.ini_keybindings(self.master)
+        self.buttons = []
 
         self.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
                        'August', 'Semptember', 'October', 'November', 'December']
@@ -31,14 +32,19 @@ class SimpleUI:
         entry = tk.Entry(self.master, width = 5)
         entry.grid(column = 0, row = 6, ipadx = self.xv, 
                 ipady = self.yv, sticky = self.stickyness)
-        confirm_add = tk.Button(self.master, text = 'confirm', anchor = self.orientation)
+        """confirm_add = tk.Button(self.master, text = 'confirm', anchor = self.orientation, 
+                                command=self.test1)
         confirm_add.grid(column = 1, row = 6, sticky = self.stickyness)
-        confirm_add['font'] = self.font_params
+        confirm_add['font'] = self.font_params"""
+    
+    def sol(self, id):
+        print(f"id: {id}")
 
     def ini_cal_grid(self):
-        self.buttons = []
-        for i in range(1, 32):
-            self.buttons.append(tk.Button(self.master, text=str(i), anchor = self.orientation))
+        for special in range(1, 32):
+            self.buttons.append(tk.Button(self.master, text=str(special), 
+            # this suggestion helped
+            anchor = self.orientation, command=lambda x=special : self.sol(x)))
 
         for i in range(28):
             self.buttons[i].grid(column = i % 7, row = i // 7 + 1, ipadx = self.xv, 
@@ -102,9 +108,13 @@ class Interactions:
             ui.buttons[-2].grid(column = 1, row = 5, ipadx = ui.xv, 
                         ipady = ui.yv, sticky = ui.stickyness)
 
-    def add(self, dummy=None):
-        # tu bedzie stworzenie eventa z dniem, godzina
-        pass
+    def add(self, ui, button_id, dummy=None):
+        print(button_id)
+        if ui.buttons[button_id]['bg'] == ui.cs.conf_dict['main_colour']:
+            ui.buttons[button_id]['bg'] = 'blue'
+        else:
+            ui.buttons[button_id]['bg'] = ui.cs.conf_dict['main_colour']
+        return ui
 
     def calculate(self, dummy=None):
         pass

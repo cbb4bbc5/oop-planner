@@ -35,9 +35,6 @@ class SimpleUI:
         entry = tk.Entry(self.master, width = 5, textvariable=self.textvar)
         entry.grid(column = 0, row = 6, ipadx = self.xv, 
                 ipady = self.yv, sticky = self.stickyness)
-        """confirm_add = tk.Button(self.master, text = 'confirm', anchor = self.orientation) 
-        confirm_add.grid(column = 1, row = 6, sticky = self.stickyness)
-        confirm_add['font'] = self.font_params"""
     
     def ini_cal_grid(self):
         for special in range(1, 32):
@@ -95,14 +92,7 @@ class Interactions:
         self.function_names = {'add': self.add, 'go_forward' : lambda dummy : self.update_label_forw(1), 
                 'go_backward' : lambda dummy : self.update_label_forw(-1), 'calculate' : self.calculate}
         self.kb = kb
-
-    def ini_keybindings(self, window):
-        for ki, vi in self.kb.conf_dict.items():
-            window.bind(f'<{ki}>', self.function_names[vi])
-        return window
-    
-    def get_day_id(self, button_id):
-        ids = {
+        self.ids = {
             'January' : 31,
             'February' : 28 + self.ui.is_leap_year(),
             'March' : 31,
@@ -116,12 +106,27 @@ class Interactions:
             'November' : 30,
             'December' : 31
         }
+
+    def ini_keybindings(self, window):
+        for ki, vi in self.kb.conf_dict.items():
+            window.bind(f'<{ki}>', self.function_names[vi])
+        return window
+    
+    def get_day_id(self, button_id):
         res = 0
-        for m, v in ids.items():
+        for m, v in self.ids.items():
             if m == self.ui.label['text']:
                 break
             res += v
         return str(res + button_id)
+
+    def reverse_id(self, day_id):
+        months = list(self.ids.keys())
+        it = 0
+        while day_id > 31:
+            day_id -= self.ids[months[it]]
+            it += 1
+        return (months[it], day_id)
 
     def update_label_forw(self, x, dummy=None):
         # TODO:
@@ -143,14 +148,12 @@ class Interactions:
                         ipady = self.ui.yv, sticky = self.ui.stickyness)
 
     def add(self, id, dummy=None):
-        for ev in self.ui.event_list:
-            print(ev.event_text, end='')
-        print()
         if self.ui.buttons[id]['bg'] == self.ui.cs.conf_dict['main_colour']:
             self.ui.buttons[id]['bg'] = 'blue'
-            e = event.Event(12, 13, self.ui.textvar.get(), self.get_day_id(id))
+            e = event.Event(self.ui.textvar.get(), self.get_day_id(id))
             self.ui.event_list.append(e)
-            self.ui.textvar = tk.StringVar() 
+            # this tk variable has to be emptied manually
+            self.ui.textvar.set('') 
         else:
             self.ui.buttons[id]['bg'] = self.ui.cs.conf_dict['main_colour']
 

@@ -37,14 +37,10 @@ class SimpleUI:
         confirm_add.grid(column = 1, row = 6, sticky = self.stickyness)
         confirm_add['font'] = self.font_params"""
     
-    def sol(self, id):
-        print(f"id: {id}")
-
     def ini_cal_grid(self):
         for special in range(1, 32):
-            self.buttons.append(tk.Button(self.master, text=str(special), 
-            # this suggestion helped
-            anchor = self.orientation, command=lambda x=special : self.sol(x)))
+            self.buttons.append(tk.Button(self.master, text=str(special), anchor = self.orientation, 
+            command=lambda id=special : self.inter.add(id - 1)))
 
         for i in range(28):
             self.buttons[i].grid(column = i % 7, row = i // 7 + 1, ipadx = self.xv, 
@@ -61,9 +57,6 @@ class SimpleUI:
         for i in range(7):
             tk.Grid.columnconfigure(self.master, i, weight=self.scale)
             tk.Grid.rowconfigure(self.master, i, weight=self.scale)
-    
-    def test(self, step=1):
-        self = self.inter.update_label_forw(step, self)
 
     def ini_nav(self):
         self.label = tk.Label(self.master, text=self.months[0], anchor = self.orientation)
@@ -71,8 +64,8 @@ class SimpleUI:
         self.label['font'] = self.font_params
         self.label['bg'] = self.cs.conf_dict['label_colour']
 
-        button_side1 = tk.Button(self.master, text='previous', anchor = self.orientation, command= lambda : self.test(-1))
-        button_side2 = tk.Button(self.master, text='next', anchor= self.orientation, command=self.test)
+        button_side1 = tk.Button(self.master, text='previous', anchor = self.orientation, command=lambda : self.inter.update_label_forw(-1))
+        button_side2 = tk.Button(self.master, text='next', anchor= self.orientation, command=lambda : self.inter.update_label_forw(1))
         button_side1.grid(column = 0, row = 0, columnspan = 2, sticky = self.stickyness)
         button_side2.grid(column = 5, row = 0, columnspan = 2, sticky = self.stickyness)
         button_side1['bg'] = self.cs.conf_dict['nav_button_left_colour']
@@ -86,8 +79,9 @@ class SimpleUI:
 class Interactions:
     text = ''
     def __init__(self, kb, ui):
-        self.function_names = {'add': self.add, 'go_forward' : lambda dummy : self.update_label_forw(1, ui), 
-                'go_backward' : lambda dummy : self.update_label_forw(-1, ui), 'calculate' : self.calculate}
+        self.ui = ui
+        self.function_names = {'add': self.add, 'go_forward' : lambda dummy : self.update_label_forw(1, self.ui), 
+                'go_backward' : lambda dummy : self.update_label_forw(-1, self.ui), 'calculate' : self.calculate}
         self.kb = kb
 
     def ini_keybindings(self, window):
@@ -95,26 +89,25 @@ class Interactions:
             window.bind(f'<{ki}>', self.function_names[vi])
         return window
 
-    def update_label_forw(self, x, ui, dummy=None):
-        ui.month_id = (ui.month_id + x) % 12
-        ui.label['text'] = ui.months[ui.month_id]
-        if not ui.has_31_days():
-            ui.buttons[-1].grid_remove()
-            if ui.label['text'] == 'February':
-                ui.buttons[-2].grid_remove()
+    #def update_label_forw(self, x, ui, dummy=None):
+    def update_label_forw(self, x, dummy=None):
+        self.ui.month_id = (self.ui.month_id + x) % 12
+        self.ui.label['text'] = self.ui.months[self.ui.month_id]
+        if not self.ui.has_31_days():
+            self.ui.buttons[-1].grid_remove()
+            if self.ui.label['text'] == 'February':
+                self.ui.buttons[-2].grid_remove()
         else:
-            ui.buttons[-1].grid(column = 2, row = 5, ipadx = ui.xv, 
-                        ipady = ui.yv, sticky = ui.stickyness)
-            ui.buttons[-2].grid(column = 1, row = 5, ipadx = ui.xv, 
-                        ipady = ui.yv, sticky = ui.stickyness)
+            self.ui.buttons[-1].grid(column = 2, row = 5, ipadx = self.ui.xv, 
+                        ipady = self.ui.yv, sticky = self.ui.stickyness)
+            self.ui.buttons[-2].grid(column = 1, row = 5, ipadx = self.ui.xv, 
+                        ipady = self.ui.yv, sticky = self.ui.stickyness)
 
-    def add(self, ui, button_id, dummy=None):
-        print(button_id)
-        if ui.buttons[button_id]['bg'] == ui.cs.conf_dict['main_colour']:
-            ui.buttons[button_id]['bg'] = 'blue'
+    def add(self, id, dummy=None):
+        if self.ui.buttons[id]['bg'] == self.ui.cs.conf_dict['main_colour']:
+            self.ui.buttons[id]['bg'] = 'blue'
         else:
-            ui.buttons[button_id]['bg'] = ui.cs.conf_dict['main_colour']
-        return ui
+            self.ui.buttons[id]['bg'] = self.ui.cs.conf_dict['main_colour']
 
     def calculate(self, dummy=None):
         pass

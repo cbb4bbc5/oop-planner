@@ -14,5 +14,4 @@ class Event:
 
 if __name__ == '__main__':
     c = Event((12, 00), (13, 30), 'sample text', 0)
-    #d = Event((13, 30), (12, 00), 'sample text', 0)
     print(c.event_text)

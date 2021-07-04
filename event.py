@@ -32,6 +32,12 @@ class Event:
     def __get_hour__(self, hour):
         h_tmp = [int(h) for h in hour.split(':')]
         return (h_tmp[0], h_tmp[1])
+    
+    def get_start(self):
+        return self.start_time
+
+    def get_end(self):
+        return self.end_time
 
 if __name__ == '__main__':
     # sample input

@@ -5,6 +5,12 @@ from datetime import datetime
 
 class SimpleUI:
     def __init__(self, master, cs, kb):
+        self.xv = 15
+        self.yv = 30
+        self.scale = 1
+        self.font_params = ('Helvetica', 20)
+        self.stickyness = 'NSEW'
+        self.orientation = 'center'
         self.master = master
         self.master.minsize(900, 500)
         self.cs = cs
@@ -20,21 +26,30 @@ class SimpleUI:
                        'August', 'September', 'October', 'November', 'December']
         self.month_id = 0
 
-        self.xv = 15
-        self.yv = 30
-        self.scale = 1
-        self.font_params = ('Helvetica', 20)
-        self.stickyness = 'NSEW'
-        self.orientation = 'center'
 
         self.ini_nav()
         self.ini_cal_grid()
         self.ini_comp()
 
     def ini_comp(self):
+        info_label = tk.Label(self.master, text='Add another event:', 
+        anchor=self.orientation)
+        info_label.grid(column=0, row=6) 
         entry = tk.Entry(self.master, width = 5, textvariable=self.textvar)
-        entry.grid(column = 0, row = 6, ipadx = self.xv, 
+        entry.grid(column = 1, row = 6, ipadx = self.xv, 
                 ipady = self.yv, sticky = self.stickyness)
+
+        frame = tk.Frame(self.master)
+        frame.grid(column=3, row=5, columnspan=3)
+        removal_info = tk.Label(frame, text='To remove event provide its day and hours:', 
+        anchor=self.orientation)
+        removal_info.grid(column=0, row=0, sticky=self.stickyness) 
+        self.rem_str = tk.StringVar()
+        input_str = tk.Entry(frame, textvariable=self.rem_str, width=5)
+        input_str.grid(column=0, row=1, sticky=self.stickyness)
+        removal_button = tk.Button(self.master, text='Confirm', command=self.inter.remove)
+        removal_button.grid(column=6, row=5)
+ 
     
     def ini_cal_grid(self):
         for special in range(1, 32):
@@ -90,7 +105,7 @@ class Interactions:
     def __init__(self, kb, ui):
         self.ui = ui
         self.function_names = {'add': self.add, 'go_forward' : lambda dummy : self.update_label_forw(1), 
-                'go_backward' : lambda dummy : self.update_label_forw(-1), 'calculate' : self.calculate}
+                'go_backward' : lambda dummy : self.update_label_forw(-1)}
         self.kb = kb
         self.ids = {
             'January' : 31,
@@ -106,6 +121,21 @@ class Interactions:
             'November' : 30,
             'December' : 31
         }
+    
+    def remove(self):
+        event_params = self.ui.rem_str.get().split('-')
+        event_params[0] = int(self.get_day_id(int(event_params[0]) - 1))
+        event_params[1] = tuple([int(h) for h in event_params[1].split(':')])
+        event_params[2] = tuple([int(h) for h in event_params[2].split(':')])
+        cnt = 0
+        for e in self.ui.event_list:
+            if e.get_id() == event_params[0]:
+                if e.get_start() == event_params[1] and e.get_end() == event_params[2]:
+                    self.ui.event_list.remove(e)
+                cnt += 1
+        if cnt <= 1:
+            self.ui.buttons[event_params[0]]['bg'] = self.ui.cs.conf_dict['main_colour']
+        self.ui.rem_str.set('')
 
     def ini_keybindings(self, window):
         for ki, vi in self.kb.conf_dict.items():
@@ -129,8 +159,6 @@ class Interactions:
         return (months[it], day_id)
 
     def update_label_forw(self, x, dummy=None):
-        # TODO:
-        # display already occupied dates
         self.ui.month_id = (self.ui.month_id + x) % 12
         self.ui.label['text'] = self.ui.months[self.ui.month_id]
         if not self.ui.has_31_days():
@@ -154,16 +182,10 @@ class Interactions:
                 self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['main_colour']
 
     def add(self, id, dummy=None):
-        if self.ui.buttons[id]['bg'] == self.ui.cs.conf_dict['main_colour']:
-            self.ui.buttons[id]['bg'] = 'blue'
-            e = event.Event(self.ui.textvar.get(), self.get_day_id(id))
-            self.ui.event_list.append(e)
-            self.ui.textvar.set('') 
-        else:
-            self.ui.buttons[id]['bg'] = self.ui.cs.conf_dict['main_colour']
-
-    def calculate(self, dummy=None):
-        pass
+        self.ui.buttons[id]['bg'] = 'blue'
+        e = event.Event(self.ui.textvar.get(), self.get_day_id(id))
+        self.ui.event_list.append(e)
+        self.ui.textvar.set('') 
 
 if __name__ == '__main__':
     root = tk.Tk()

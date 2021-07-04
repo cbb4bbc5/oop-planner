@@ -17,7 +17,7 @@ class SimpleUI:
         self.textvar = tk.StringVar()
 
         self.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
-                       'August', 'Semptember', 'October', 'November', 'December']
+                       'August', 'September', 'October', 'November', 'December']
         self.month_id = 0
 
         self.xv = 15
@@ -146,13 +146,18 @@ class Interactions:
                         ipady = self.ui.yv, sticky = self.ui.stickyness)
             self.ui.buttons[-3].grid(column = 0, row = 5, ipadx = self.ui.xv, 
                         ipady = self.ui.yv, sticky = self.ui.stickyness)
+        for e in self.ui.event_list:
+            md = self.reverse_id(e.get_id())
+            if self.ui.label['text'] == md[0]:
+                self.ui.buttons[md[1]]['bg'] = 'blue'
+            else:
+                self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['main_colour']
 
     def add(self, id, dummy=None):
         if self.ui.buttons[id]['bg'] == self.ui.cs.conf_dict['main_colour']:
             self.ui.buttons[id]['bg'] = 'blue'
             e = event.Event(self.ui.textvar.get(), self.get_day_id(id))
             self.ui.event_list.append(e)
-            # this tk variable has to be emptied manually
             self.ui.textvar.set('') 
         else:
             self.ui.buttons[id]['bg'] = self.ui.cs.conf_dict['main_colour']

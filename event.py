@@ -15,6 +15,9 @@ class Event:
         else:
             raise ValueError('End point is lesser than start point')
     
+    def get_id(self):
+        return self.day_id
+    
     def create_from_text(self, text, day_id):
         # the only accepted format
         # start end
@@ -24,7 +27,7 @@ class Event:
         self.start_time = self.__get_hour__(data[0])
         self.end_time = self.__get_hour__(data[1])
         self.event_text = data[2]
-        self.day_id = day_id
+        self.day_id = int(day_id)
     
     def __get_hour__(self, hour):
         h_tmp = [int(h) for h in hour.split(':')]

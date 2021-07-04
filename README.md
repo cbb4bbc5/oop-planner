@@ -4,11 +4,11 @@
 1. [Overview](#overview)
 2. [Installation](#installation)
 3. [Usage](#usage)
-  * [Navigation](#navigation)
-  * [Adding an event](#adding-an-event)
-  * [Computing the date difference](#computing-the-date-difference)
-  * [Editing configuration files](#editing-configuration-files)
-  * [Temporary configuration change](#temporary-configuration-change)
+	* [Navigation](#navigation)
+	* [Adding an event](#adding-an-event)
+	* [Computing the date difference](#computing-the-date-difference)
+	* [Editing configuration files](#editing-configuration-files)
+	* [Temporary configuration change](#temporary-configuration-change)
 
 ## Overview
 This repository contains the source code for a simple planner. Main functions of this program are:
@@ -44,7 +44,7 @@ input field will be then automatically cleared.
 ### Editing configuration files
 They should be located in the ```$XDG_CONFIG_HOME/planer``` if the
 corresponding environmental variable is set. Otherwise they cannot
-be used. In this case refer to [this](#temporary-configuration-change)
+be used. In this case refer to [Temporary configuration change](#temporary-configuration-change)
 
 Accepted keys and their values for colourscheme are the following:
 * main_colour
@@ -52,6 +52,7 @@ Accepted keys and their values for colourscheme are the following:
 * nav_button_right_colour
 * label_colour
 * font_colour
+
 For the list values refer to 
 [this page](http://www.science.smith.edu/dftwiki/index.php/Color_Charts_for_TKinter)
 

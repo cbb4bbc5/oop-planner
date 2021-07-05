@@ -22,7 +22,7 @@ class SimpleUI:
         self.buttons = []
         self.event_list = []
         self.textvar = tk.StringVar()
-        self.save = fileop.FileOperations(open('testfile', 'wb'))
+        self.save = fileop.FileOperations('testname')
 
         self.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
                        'August', 'September', 'October', 'November', 'December']
@@ -54,6 +54,9 @@ class SimpleUI:
  
     
     def ini_cal_grid(self):
+        # TODO
+        # include serialised objects from
+        # previous sessions
         for special in range(1, 32):
             self.buttons.append(tk.Button(self.master, text=str(special), anchor = self.orientation, 
             command=lambda id=special : self.inter.add(id - 1)))
@@ -130,12 +133,14 @@ class Interactions:
         event_params[1] = tuple([int(h) for h in event_params[1].split(':')])
         event_params[2] = tuple([int(h) for h in event_params[2].split(':')])
         cnt = 0
+        it = 0
         for e in self.ui.event_list:
-            if e.get_id() == event_params[0]:
-                if e.get_start() == event_params[1] and e.get_end() == event_params[2]:
+            if e[0].get_id() == event_params[0]:
+                if e[0].get_start() == event_params[1] and e[0].get_end() == event_params[2]:
                     self.ui.event_list.remove(e)
-                    self.ui.save.remove()
+                    self.ui.save.delete(e[1])
                 cnt += 1
+            it += 1
         if cnt <= 1:
             self.ui.buttons[event_params[0]]['bg'] = self.ui.cs.conf_dict['main_colour']
         self.ui.rem_str.set('')
@@ -178,17 +183,17 @@ class Interactions:
             self.ui.buttons[-3].grid(column = 0, row = 5, ipadx = self.ui.xv, 
                         ipady = self.ui.yv, sticky = self.ui.stickyness)
         for e in self.ui.event_list:
-            md = self.reverse_id(e.get_id())
+            md = self.reverse_id(e[0].get_id())
             if self.ui.label['text'] == md[0]:
-                self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['event_colour'] #'blue'
+                self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['event_colour'] 
             else:
                 self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['main_colour']
 
     def add(self, id, dummy=None):
         self.ui.buttons[id]['bg'] = self.ui.cs.conf_dict['event_colour']
         e = event.Event(self.ui.textvar.get(), self.get_day_id(id))
-        self.ui.event_list.append(e)
-        self.ui.save.save(e)
+        res = self.ui.save.save(e)
+        self.ui.event_list.append((e, res))
         self.ui.textvar.set('') 
 
 if __name__ == '__main__':

@@ -1,20 +1,20 @@
 import pickle
 from xdg import xdg_cache_home
-from os import path
+import os
 class FileOperations:
-    def __init__(self, file=None):
+    def __init__(self, name=None):
         self.number = 0
-        self.__reserved__ = f'save_file_{self.number}'
-        if file != None:
-            self.file = file
-        else:
-            self.file = open(path.join(xdg_cache_home(), 'planer', self.__reserved__), 'wb')
-            self.number += 1
-    
+        self.name = name
+        if name == None:
+            self.name = 'save_file'
+        #self.file = open(os.path.join(xdg_cache_home(), 'planer', self.name), 'wb')
+
     def save(self, obj):
-        if self.__reserved__ in self.file.name:
-            self.number += 1
-        pickle.dump(obj, self.file)
+        tmp_name =  f'{self.name}_{self.number}'
+        pickle.dump(obj, open(tmp_name, 'wb'))
+        self.number += 1
+        return tmp_name
     
-    def delete(self):
-        pass
+    def delete(self, name):
+        if os.path.exists(name):
+            os.remove(name)

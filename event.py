@@ -29,15 +29,20 @@ class Event:
         self.event_text = data[2]
         self.day_id = int(day_id)
     
+    # TODO:
+    # make this "public" 
     def __get_hour__(self, hour):
-        h_tmp = [int(h) for h in hour.split(':')]
-        return (h_tmp[0], h_tmp[1])
+        h_tmp = tuple(int(h) for h in hour.split(':'))
+        return h_tmp
     
     def get_start(self):
         return self.start_time
 
     def get_end(self):
         return self.end_time
+    
+    def get_text(self):
+        return self.event_text
 
 if __name__ == '__main__':
     # sample input

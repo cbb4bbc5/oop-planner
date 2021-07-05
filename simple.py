@@ -2,6 +2,7 @@ import tkinter as tk
 import configuration
 import event
 from datetime import datetime
+import fileop
 
 class SimpleUI:
     def __init__(self, master, cs, kb):
@@ -21,6 +22,7 @@ class SimpleUI:
         self.buttons = []
         self.event_list = []
         self.textvar = tk.StringVar()
+        self.save = fileop.FileOperations(open('testfile', 'wb'))
 
         self.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
                        'August', 'September', 'October', 'November', 'December']
@@ -132,6 +134,7 @@ class Interactions:
             if e.get_id() == event_params[0]:
                 if e.get_start() == event_params[1] and e.get_end() == event_params[2]:
                     self.ui.event_list.remove(e)
+                    self.ui.save.remove()
                 cnt += 1
         if cnt <= 1:
             self.ui.buttons[event_params[0]]['bg'] = self.ui.cs.conf_dict['main_colour']
@@ -177,14 +180,15 @@ class Interactions:
         for e in self.ui.event_list:
             md = self.reverse_id(e.get_id())
             if self.ui.label['text'] == md[0]:
-                self.ui.buttons[md[1]]['bg'] = 'blue'
+                self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['event_colour'] #'blue'
             else:
                 self.ui.buttons[md[1]]['bg'] = self.ui.cs.conf_dict['main_colour']
 
     def add(self, id, dummy=None):
-        self.ui.buttons[id]['bg'] = 'blue'
+        self.ui.buttons[id]['bg'] = self.ui.cs.conf_dict['event_colour']
         e = event.Event(self.ui.textvar.get(), self.get_day_id(id))
         self.ui.event_list.append(e)
+        self.ui.save.save(e)
         self.ui.textvar.set('') 
 
 if __name__ == '__main__':

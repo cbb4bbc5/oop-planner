@@ -3,7 +3,8 @@ from os import path
 
 class Configuration:
     key_list_colours = ['main_colour', 'nav_button_left_colour',
-                'nav_button_right_colour', 'label_colour', 'font_colour']
+                'nav_button_right_colour', 'label_colour', 'font_colour',
+                'event_colour']
     key_list_keybindings = ['go_forward', 'go_backward', 'calculate', 'add']
     """function_names = {'add': Interactions.add, 'go_forward' : lambda dummy : self.update_label_forw(1), 
                 'go_backward' : lambda dummy : self.update_label_forw(-1), 'calculate' : Interactions.calculate}"""

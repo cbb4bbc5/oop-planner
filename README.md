@@ -17,12 +17,14 @@ This repository contains the source code for a simple planner. Main functions of
   * keybindings.txt
   * colourscheme.txt
 * one time customisation using custom files
-* respecting XDG BASE DIRECTORY
+* respecting XDG BASE DIRECTORY (mixed results)
 
 ## Installation
 The project was made using Python 3.9.4. It was primarily tested on
 Windows 10 and briefly on Arch Linux. The only non-standard required
-module is [this one](https://pypi.org/project/xdg/)
+module is [this one](https://pypi.org/project/xdg/).
+
+To run the demonstration program just run file called simple.py
 
 ## Usage
 ### Navigation
@@ -50,8 +52,8 @@ Accepted keys and their values for colourscheme are the following:
 * label_colour
 * font_colour
 
-For the list values refer to 
-[this page](http://www.science.smith.edu/dftwiki/index.php/Color_Charts_for_TKinter)
+For the list of values refer to 
+[this page](http://www.science.smith.edu/dftwiki/index.php/Color_Charts_for_TKinter).
 
 And for keybidnings:
 * go_forward

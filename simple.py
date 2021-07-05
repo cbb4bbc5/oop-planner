@@ -54,9 +54,6 @@ class SimpleUI:
  
     
     def ini_cal_grid(self):
-        # TODO
-        # include serialised objects from
-        # previous sessions
         for special in range(1, 32):
             self.buttons.append(tk.Button(self.master, text=str(special), anchor = self.orientation, 
             command=lambda id=special : self.inter.add(id - 1)))
@@ -66,6 +63,12 @@ class SimpleUI:
                     ipady = self.yv, sticky = self.stickyness)
             self.buttons[i]['font'] = self.font_params
             self.buttons[i]['bg'] = self.cs.conf_dict['main_colour']
+        
+        saved_from_prev = self.save.read()
+        for e in saved_from_prev:
+            rev = self.inter.reverse_id(e.get_id())
+            if rev[0] == 'January':
+                self.buttons[rev[1]]['bg'] = self.cs.conf_dict['event_colour']
 
         for i in range(28, 31):
             self.buttons[i].grid(column = i % 7, row = 5, ipadx = self.xv, 
@@ -182,6 +185,15 @@ class Interactions:
                         ipady = self.ui.yv, sticky = self.ui.stickyness)
             self.ui.buttons[-3].grid(column = 0, row = 5, ipadx = self.ui.xv, 
                         ipady = self.ui.yv, sticky = self.ui.stickyness)
+
+        saved_from_prev = self.ui.save.read()
+        for e in saved_from_prev:
+            rev = self.reverse_id(e.get_id())
+            if rev[0] == self.ui.label['text']:
+                self.ui.buttons[rev[1]]['bg'] = self.ui.cs.conf_dict['event_colour']
+            else:
+                self.ui.buttons[rev[1]]['bg'] = self.ui.cs.conf_dict['main_colour']
+
         for e in self.ui.event_list:
             md = self.reverse_id(e[0].get_id())
             if self.ui.label['text'] == md[0]:
